@@ -20,13 +20,27 @@
 // WiFi
 char* ssid = "viveHamadi";                 // Your personal network SSID
 const char* wifi_password = "samy1243"; // Your personal network password
+
 //MQTT
 const char* mqtt_server = "192.168.137.231";  // IP of the MQTT broker
+
 //Topics_in
 const char* pompe_topic = "esp32/water";
 const char* ventilo_topic = "esp32/air";
 const char* servo_topic    ="esp32/servo";
 // const char* led_topic = "esp32/light";
+
+const char* humidity_topic = "serre/humidity";
+const char* temperature_topic ="serre/temperature";
+const char* soil_topic = "serre/soli";
+const char* lum_topic = "serre/lum";
+const char* CO2_topic = "serre/gaz";
+const char* niveau_topic = "serre/reservoir";
+
+const char* mqtt_username = "vivealik"; // MQTT username
+const char* mqtt_password = "fifisurtoi"; // MQTT password
+const char* clientID_1 = "client_livingroom";// MQTT client ID
+const char* clientID = "Esp32Client"; // MQTT client ID
 
 // Initializes the espClient
 WiFiClient espClient;
@@ -47,15 +61,3 @@ DHT dht(DHTPIN, DHTTYPE);
 unsigned long previousMillis = 0;
 unsigned long interval = 30000;
 
-
-const char* humidity_topic = "serre/humidity";
-const char* temperature_topic ="serre/temperature";
-const char* soil_topic = "serre/soli";
-const char* lum_topic = "serre/lum";
-const char* CO2_topic = "serre/gaz";
-const char* niveau_topic = "serre/reservoir";
-
-const char* mqtt_username = "vivealik"; // MQTT username
-const char* mqtt_password = "fifisurtoi"; // MQTT password
-const char* clientID_1 = "client_livingroom";// MQTT client ID
-const char* clientID = "Esp32Client"; // MQTT client ID
