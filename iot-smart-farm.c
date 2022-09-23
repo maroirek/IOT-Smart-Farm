@@ -274,3 +274,68 @@ float temperature = dht.readTemperature();
   String ppms="co2: "+String((float)correctedPPM)+" ppm ";
   String res="niv_eau: "+String((float)Liquid_level);
 
+// // UBLISH to the MQTT Broker (topic = Temperature, defined at the beginning)
+  if (client.publish(temperature_topic, String(temperature).c_str())) {
+       Serial.println("Temperature sent!");
+   }
+   else {
+    Serial.println("Temperature failed to send. Reconnecting to MQTT Broker and trying again");
+     client.connect(clientID_1, mqtt_username, mqtt_password);
+     delay(10); 
+     client.publish(temperature_topic, String(temperature).c_str());
+   }
+
+
+ if (client.publish(humidity_topic, String(humidity).c_str())) {
+    Serial.println("Humidity sent!");  }
+  
+   else {
+     Serial.println("Humidity failed to send. Reconnecting to MQTT Broker and trying again");
+     client.connect(clientID_1, mqtt_username, mqtt_password);
+     delay(10); // This delay ensures that client.publish doesn't clash with the client.connect call
+     client.publish(humidity_topic, String(humidity).c_str());
+  }
+
+ if (client.publish(soil_topic, String(soilmoisturepercent ).c_str())) {
+       Serial.println("Soil sent!");}
+  
+ else {
+     Serial.println("soil failed to send. Reconnecting to MQTT Broker and trying again");
+    client.connect(clientID_1, mqtt_username, mqtt_password);
+     delay(10); // This delay ensures that client.publish doesn't clash with the client.connect call
+     client.publish(soil_topic, String(soilmoisturepercent ).c_str());}
+
+
+ if (client.publish(lum_topic, String(lightVal).c_str())) {
+     Serial.println("lum sent!"); }
+  
+  else {
+     Serial.println("lum failed to send. Reconnecting to MQTT Broker and trying again");
+     client.connect(clientID_1, mqtt_username, mqtt_password);
+  delay(10); 
+     client.publish(lum_topic, String(lightVal).c_str());}
+
+
+ if (client.publish(CO2_topic, String(correctedPPM).c_str())) {
+     Serial.println("co2 sent!");   }
+ 
+  else {
+     Serial.println("co2 failed to send. Reconnecting to MQTT Broker and trying again");
+     client.connect(clientID_1, mqtt_username, mqtt_password);
+     delay(10); 
+     client.publish(CO2_topic, String(correctedPPM).c_str());
+    }
+
+ if (client.publish(niveau_topic, String(Liquid_level).c_str())) {
+     Serial.println("niveau d'eau envoyé!");   }
+ 
+  else {
+     Serial.println("niveau d'eau failed to send. Reconnecting to MQTT Broker and trying again");
+     client.connect(clientID_1, mqtt_username, mqtt_password);
+     delay(10); 
+     client.publish(niveau_topic, String(Liquid_level).c_str());
+    }
+
+  delay(1000);
+}
+
