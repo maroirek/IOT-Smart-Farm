@@ -106,3 +106,106 @@ void connect_MQTT()
   else {
          Serial.println("Connection to MQTT Broker failed...");}
 
+
+}  
+void reconnect () {
+  
+
+  // Loop until we're reconnected
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+  if (client.connect(clientID)) {
+   client.subscribe("esp32/air");
+   client.subscribe("esp32/ventilo");
+   client.subscribe("esp32/servo");
+   client.subscribe("esp32/lum");
+   Serial.print("esp is sub");
+
+   }
+    else { Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
+}
+//Function executed only when a message is received
+void callback(String topic, byte* message, unsigned int length) {
+  Serial.print("Message arrived o n topic: ");
+  Serial.print(topic);
+  Serial.print(". Message: ");
+
+  String messageTemp;
+  
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)message[i]);
+    messageTemp += (char)message[i];
+  }
+  Serial.println();
+
+  // Feel free to add more  if statements to control more GPIOs with MQTT
+
+  // If a message is received on the topic home/office/esp1/gpio2, you check if the message is either 1 or 0. Turns the ESP GPIO according to the message
+  if(topic=="esp32/water"){
+      Serial.print("Allumer la pompe ");
+      if(messageTemp == "1"){
+        digitalWrite(R1, HIGH);
+      }
+      else if(messageTemp == "0"){
+        digitalWrite(R1, LOW);
+        Serial.print(" La pompe est Off");
+      }
+  }
+  if(topic=="esp32/lum"){
+      Serial.print("Allumer la lum");
+      if(messageTemp == "1"){
+        digitalWrite(R3, HIGH);
+      }
+      else if(messageTemp == "0"){
+        digitalWrite(R3, LOW);
+        Serial.print(" La lum est Off");
+      }
+  }
+
+  if(topic=="esp32/air"){
+      Serial.print("Ventilo is On ");
+      if(messageTemp == "1"){
+        
+       for (pos = 10; pos <= 150 ; pos += 1) { // goes from 0 degrees to 180 degrees
+         myservo.write(pos);    // tell servo to go to position in variable 'pos'
+         delay(50);             // waits 15ms for the servo to reach the position
+        digitalWrite(R2, HIGH);
+  }
+      
+      }
+      else if(messageTemp == "0"){
+        digitalWrite(R2, LOW);
+        for (pos = 150; pos >= 10 ; pos -= 1) { // goes from 0 degrees to 180 degrees
+                       // in steps of 1 degree
+                 myservo.write(pos);    // tell servo to go to position in variable 'pos'
+                 delay(50);             // waits 15ms for the servo to reach the position 
+      }
+        Serial.print(" le ventilo est Off");
+      }
+  }
+  if(topic=="esp32/servo"){
+      Serial.print("Servo is On ");
+      if(messageTemp == "0"){
+       for (pos = 150; pos >= 10 ; pos -= 1) { // goes from 0 degrees to 180 degrees
+         myservo.write(pos);    // tell servo to go to position in variable 'pos'
+         delay(50);             // waits 15ms for the servo to reach the position
+  }
+      }
+      else if(messageTemp == "1"){
+             for (pos = 10; pos <= 150 ; pos += 1) { // goes from 0 degrees to 180 degrees
+                       // in steps of 1 degree
+                 myservo.write(pos);    // tell servo to go to position in variable 'pos'
+                 delay(50);             // waits 15ms for the servo to reach the position 
+      }
+  }
+
+  }
+  Serial.println();
+}
+
