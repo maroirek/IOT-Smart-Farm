@@ -209,3 +209,68 @@ void callback(String topic, byte* message, unsigned int length) {
   Serial.println();
 }
 
+void dataout() {
+  int lightVal = analogRead(32);
+    sMValue = analogRead(34);  
+
+  soilmoisturepercent = map(sMValue, dry, wet, 0, 100);
+
+    if(soilmoisturepercent >= 100) {
+
+            Serial.println("100 %");}
+
+    else if(soilmoisturepercent <=0)
+
+      {Serial.println("0 %");}
+
+    else if(soilmoisturepercent >0 && soilmoisturepercent < 100)
+
+            {Serial.print(soilmoisturepercent);
+
+       Serial.println("%"); }
+
+float humidity = dht.readHumidity();
+    //celcius
+float temperature = dht.readTemperature();
+
+ if (isnan(humidity) || isnan(temperature) )
+    {
+        Serial.println("Failed to read from DHT sensor!");
+        return;
+    }
+
+  float ppm = gasSensor.getPPM();
+  float correctedPPM = gasSensor.getCorrectedPPM(temperature, humidity);
+
+  Serial.print("humidité du sol : ");
+  Serial.println(sMValue);
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.println(" %\t");
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" *C ");
+  
+  Serial.print("luminosité : \t");
+  Serial.println(lightVal);
+
+  Serial.print("\t PPM: ");
+  Serial.print(ppm);
+  Serial.print("\t Corrected PPM: ");
+  Serial.print(correctedPPM);
+  Serial.println("ppm");
+  Serial.println("*******");
+
+  Liquid_level=digitalRead(Cap); 
+
+ Serial.print("Liquid_level= "); 
+ Serial.println(Liquid_level,DEC);
+
+  String hs="Hum: "+String((float)humidity)+" % ";
+  String ts="Temp: "+String((float)temperature)+" C ";
+  String ss="soil: "+String((int)sMValue) +".";
+  String ssp="soilp: "+String((int) soilmoisturepercent)+"%";
+  String lums="lum: "+String((int)lightVal)+". ";
+  String ppms="co2: "+String((float)correctedPPM)+" ppm ";
+  String res="niv_eau: "+String((float)Liquid_level);
+
