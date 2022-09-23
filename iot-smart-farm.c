@@ -61,3 +61,48 @@ DHT dht(DHTPIN, DHTTYPE);
 unsigned long previousMillis = 0;
 unsigned long interval = 30000;
 
+//GPIOS
+ int R1= 25;      //pompe
+ int R2= 14;      //ventilo
+ int R3= 27;      //lum
+
+Servo myservo;  // create servo object to control a servo
+int pos = 10;    // variable to store the servo position
+///Recommended PWM GPIO pins on the ESP32 include 2,4,12-19,21-23,25-27,32-33 
+ int servoPin = 13;
+
+//Function to connect to WIFI
+void connect_wifi () {
+
+   WiFi.begin(ssid, wifi_password);
+
+   while (WiFi.status() != WL_CONNECTED) {
+
+     delay(500);
+     Serial.print(".");
+   Serial.println("WiFi connected");
+   Serial.print("IP address: ");
+   Serial.println(WiFi.localIP());} }
+
+
+//Function to connect to MQTT
+void connect_MQTT()
+{
+
+   Serial.print("Connecting to ");
+   Serial.println(ssid);
+
+  // Connect to MQTT Broker
+  // client.connect returns a boolean value to let us know if the connection was successful.
+  // If the connection is failing, make sure you are using the correct MQTT Username and Password (Setup Earlier in the Instructable)
+
+   if (client.connect(clientID, mqtt_username, mqtt_password) || client.connect(clientID_1, mqtt_username, mqtt_password)  ) {
+           Serial.println("Connected to MQTT Broker!");
+           client.subscribe("esp32/water");
+           client.subscribe("esp32/air");
+           client.subscribe("esp32/servo");
+           client.subscribe("esp32/lum");
+           }
+  else {
+         Serial.println("Connection to MQTT Broker failed...");}
+
