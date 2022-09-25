@@ -339,3 +339,42 @@ float temperature = dht.readTemperature();
   delay(1000);
 }
 
+void setup() {
+  // put your setup code here, to run once:
+ 
+  Serial.begin(9600);
+  pinMode(R1, OUTPUT);
+  pinMode(R2, OUTPUT);
+  dht.begin();
+  connect_wifi ();
+  
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+    connect_MQTT();
+
+
+  ESP32PWM::allocateTimer(0);
+  ESP32PWM::allocateTimer(1);
+  ESP32PWM::allocateTimer(2);
+  ESP32PWM::allocateTimer(3);
+  myservo.setPeriodHertz(50);    // standard 50 hz servo
+  myservo.attach(servoPin, 500, 2400);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  
+  //  Serial.setTimeout(2000);
+// this function will listen for incomming
+  //subscribed topic-process-invoke receivedCallback */
+  client.loop();
+  client.connect("Esp32Client");
+  
+if (!client.connected()) {
+    reconnect();
+  }
+
+
+dataout();
+
+
